@@ -1,10 +1,25 @@
+#################################################
+# ETF Portfolio Performance Analysis
+# Author: Nathan Tumulty
+# Purpose: Compare ETF performance, risk, and growth
+# ETFs: VOO, VTI, QQQM, VUG, VXUS, VT
+#################################################
+
 # Load libraries
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
 library(scales)
 
+#################################################
+# Import Data
+#################################################
+
 Stock_Market_Analysis <- read.csv("Stock_Market_Analysis.csv")
+
+#################################################
+# Data Overview
+#################################################
 
 View(Stock_Market_Analysis)
 
@@ -13,6 +28,10 @@ glimpse(Stock_Market_Analysis)
 nrow(Stock_Market_Analysis)
 
 unique(Stock_Market_Analysis$ETF)
+
+#################################################
+# ETF Performance Summary
+#################################################
 
 summary_table <- Stock_Market_Analysis %>%
   group_by(ETF) %>%
@@ -25,6 +44,10 @@ summary_table <- Stock_Market_Analysis %>%
 
 View(summary_table)
 
+#################################################
+# Sharpe Ratio Comparison
+#################################################
+
 ggplot(summary_table, aes(x = ETF, y = sharpe)) +
   geom_bar(stat = "identity") +
   labs(
@@ -32,6 +55,10 @@ ggplot(summary_table, aes(x = ETF, y = sharpe)) +
     x = "ETF",
     y = "Sharpe Ratio"
   )
+
+#################################################
+# Growth of $10,000 Investment
+#################################################
 
 Stock_Market_Analysis <- Stock_Market_Analysis %>%
   group_by(ETF) %>%
@@ -57,6 +84,10 @@ ggplot(growth_data, aes(x = Date, y = portfolio_value, color = ETF)) +
     y = "Portfolio Value ($)"
   )
 
+#################################################
+# VOO Benchmark Comparison
+#################################################
+
 benchmark_data <- Stock_Market_Analysis %>%
   filter(ETF == "VOO") %>%
   arrange(Date) %>%
@@ -80,6 +111,10 @@ ggplot() +
     x = "Date",
     y = "Portfolio Value ($)"
   )
+
+#################################################
+# Rank ETFs by Sharpe Ratio
+#################################################
 
 summary_table %>%
   arrange(desc(sharpe))
